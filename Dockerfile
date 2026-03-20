@@ -24,14 +24,8 @@ RUN pip install --no-cache-dir runpod
 RUN pip install --no-cache-dir liquid-audio --ignore-requires-python
 
 # Note: Flash attention removed - 2+ hour compile time not worth it for initial deployment
-# Can add pre-built wheel later if needed for performance optimization
-
-# Download model during build (baked into image for faster cold starts)
-RUN python -c "from liquid_audio import LFM2AudioModel, LFM2AudioProcessor; \
-    print('Downloading model...'); \
-    LFM2AudioProcessor.from_pretrained('LiquidAI/LFM2.5-Audio-1.5B'); \
-    LFM2AudioModel.from_pretrained('LiquidAI/LFM2.5-Audio-1.5B'); \
-    print('Model downloaded successfully')"
+# Note: Model download moved to runtime (handler.py) - build was timing out on 3GB download
+# Cold starts will be slower (~60s) but build is more reliable
 
 # Copy handler
 COPY handler.py /app/handler.py
