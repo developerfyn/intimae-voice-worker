@@ -6,20 +6,29 @@ FROM runpod/pytorch:2.2.0-py3.10-cuda12.1.1-devel-ubuntu22.04
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies (including build tools for audio packages)
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     libsndfile1 \
+    libsndfile1-dev \
+    build-essential \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-RUN pip install --no-cache-dir \
-    runpod \
-    torch \
-    torchaudio \
-    liquid-audio \
-    transformers \
-    accelerate
+# Upgrade pip
+RUN pip install --upgrade pip
+
+# Install runpod first
+RUN pip install --no-cache-dir runpod
+
+# Install audio processing dependencies
+RUN pip install --no-cache-dir torchaudio
+
+# Install transformers and accelerate
+RUN pip install --no-cache-dir transformers accelerate
+
+# Install liquid-audio (may need additional deps)
+RUN pip install --no-cache-dir liquid-audio
 
 # Optional: Install flash attention for better performance
 RUN pip install flash-attn --no-build-isolation || echo "Flash attention not available, using SDPA fallback"
