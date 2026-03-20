@@ -23,8 +23,8 @@ RUN pip install --no-cache-dir runpod
 # Install liquid-audio (ignore Python version check)
 RUN pip install --no-cache-dir liquid-audio --ignore-requires-python
 
-# Optional: Install flash attention for better performance
-RUN pip install flash-attn --no-build-isolation || echo "Flash attention not available"
+# Note: Flash attention removed - 2+ hour compile time not worth it for initial deployment
+# Can add pre-built wheel later if needed for performance optimization
 
 # Download model during build (baked into image for faster cold starts)
 RUN python -c "from liquid_audio import LFM2AudioModel, LFM2AudioProcessor; \
