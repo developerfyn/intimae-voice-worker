@@ -20,6 +20,9 @@ RUN pip install --upgrade pip
 # Install runpod
 RUN pip install --no-cache-dir runpod
 
+# Install liquid-audio dependencies explicitly first
+RUN pip install --no-cache-dir transformers accelerate
+
 # Install liquid-audio (ignore Python version check)
 RUN pip install --no-cache-dir liquid-audio --ignore-requires-python
 
